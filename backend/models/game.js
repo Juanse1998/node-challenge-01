@@ -9,10 +9,6 @@ Game.init({
     autoIncrement: true,
     primaryKey: true,
   },
-  title: {
-    type: DataTypes.STRING,
-    allowNull: false,
-  },
   whitePlayerId: {
     type: DataTypes.INTEGER,
     allowNull: false,
