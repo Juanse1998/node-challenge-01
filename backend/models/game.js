@@ -1,5 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
+const Move = require('./move.js');
 
 class Game extends Model {}
 
@@ -49,6 +50,11 @@ Game.init({
   modelName: 'Game',
   tableName: 'games',
   timestamps: true,
+});
+
+Game.hasMany(Move, {
+  foreignKey: 'gameId',
+  as: 'moves'
 });
 
 module.exports = Game;
