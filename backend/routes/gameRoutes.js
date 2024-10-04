@@ -1,9 +1,12 @@
 import express from 'express';
-import { createGame, getAllGames } from '../controllers/gameController.js';
+import { createMatch, getMatchById, getAllMatches, updateMatch, deleteMatch } from '../controllers/gameController.js';
 
 const router = express.Router();
 
-router.post('/games', createGame);
-router.get('/games', getAllGames);
+router.post('/matches', createMatch);
+router.get('/matches', getAllMatches);
+router.get('/matches/:id', getMatchById);
+router.put('/matches/:id', updateMatch);
+router.delete('/matches/:id', deleteMatch);
 
 export default router;
