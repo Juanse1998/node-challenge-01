@@ -25,8 +25,56 @@ sequelize.authenticate()
 const syncDatabase = async () => {
   try {
     await Player.sync({ force: false });
-    await Game.sync({ force: false }); // Usa force: false para recrear la tabla si existe
+    await Game.sync({ force: false });
     await Move.sync({ force: false });
+    
+    // Usa findOrCreate para evitar la duplicación de jugadores
+    const [player1, player1Created] = await Player.findOrCreate({
+      where: { username: 'player1' },
+      defaults: {
+        name: 'Player 1',
+        last_name: 'Sosa',
+        password: '123456'
+      }
+    });
+    
+    const [player2, player2Created] = await Player.findOrCreate({
+      where: { username: 'player2' },
+      defaults: {
+        name: 'Player 2',
+        last_name: 'Sosa',
+        password: '123456'
+      }
+    });
+    
+    // Verifica si ya existe una partida con estos jugadores
+    const gameExists = await Game.findOne({
+      where: {
+        whitePlayerId: player1.id,
+        blackPlayerId: player2.id
+      }
+    });
+    
+    const loadMoves = (gameId) => {
+      const moves = [
+        { from: 'e2', to: 'e4', piece: 'pawn', gameId: gameId, playerId: player1.id},
+        { from: 'e5', to: 'e7', piece: 'pawn', gameId: gameId, playerId: player1.id },
+        { from: 'g1', to: 'f3', piece: 'knight', gameId: gameId, playerId: player2.id},
+        { from: 'b8', to: 'c6', piece: 'knight', gameId: gameId, playerId: player2.id}
+      ];
+      return moves;
+    }
+    // Crea el juego solo si no existe
+    if (!gameExists) {
+      var game = await Game.create({
+        whitePlayerId: player1.id,
+        blackPlayerId: player2.id,
+      });
+    }
+    const moves = gameExists ? loadMoves(gameExists.id) : loadMoves(game.id);
+
+
+    await Move.bulkCreate(moves);
     console.log('Base de datos sincronizada con éxito.');
   } catch (error) {
     console.error('Error al sincronizar la base de datos:', error);
@@ -38,3 +86,4 @@ syncDatabase().then(() => {
     console.log('Servidor corriendo en el puerto 3000');
   });
 });
+
