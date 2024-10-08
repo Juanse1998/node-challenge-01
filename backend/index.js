@@ -1,6 +1,7 @@
 const express = require('express');
 const { Sequelize } = require('sequelize');
 const Game = require('./models/game.js');
+const Move = require('./models/move.js');
 
 const app = express();
 const sequelize = new Sequelize('mydatabase', 'admin', 'password', {
@@ -21,6 +22,8 @@ sequelize.authenticate()
 const syncDatabase = async () => {
   try {
     await Game.sync({ force: true }); // Usa force: true para recrear la tabla si existe
+    await Move.sync({ force: true }); // Usa force: true para recrear la tabla si existe
+
     console.log('Base de datos sincronizada con éxito.');
   } catch (error) {
     console.error('Error al sincronizar la base de datos:', error);

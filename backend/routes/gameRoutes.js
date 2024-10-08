@@ -1,5 +1,5 @@
-import express from 'express';
-import { createMatch, getMatchById, getAllMatches, updateMatch, deleteMatch } from '../controllers/gameController.js';
+const express = require('express');
+const { createMatch, getMatchById, getAllMatches, updateMatch, deleteMatch } =  require('../controllers/gameController.js');
 
 const router = express.Router();
 
@@ -9,4 +9,4 @@ router.get('/matches/:id', getMatchById);
 router.put('/matches/:id', updateMatch);
 router.delete('/matches/:id', deleteMatch);
 
-export default router;
+module.exports = router;
