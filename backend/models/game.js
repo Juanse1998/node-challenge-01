@@ -52,9 +52,4 @@ Game.init({
   timestamps: true,
 });
 
-Game.hasMany(Move, {
-  foreignKey: 'gameId',
-  as: 'moves'
-});
-
 module.exports = Game;
