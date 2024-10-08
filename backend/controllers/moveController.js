@@ -1,5 +1,5 @@
 const Move = require('../models/move.js');
-const { getKnightMoves } = require('../controllers/pieces/knightController.js')
+const { getKnightMoves } = require('../services/pieces/knightController.js')
 
 const createMove = async (req, res) => {
   const { piece, to, from, board } = req.body;

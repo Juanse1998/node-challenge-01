@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/database'); // Asegúrate de que esta ruta sea correcta
-const Game = require('./game.js');
+const sequelize = require('../config/database');
+const Game = require('./game.js');  // Asegúrate de que la referencia a Game esté bien definida
 
 class Move extends Model {}
 
@@ -12,29 +12,44 @@ Move.init({
   },
   from: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      isValidPosition(value) {
+        if (!/^[a-h][1-8]$/.test(value)) {
+          throw new Error('Posición de ajedrez no válida (debe estar entre a1 y h8)');
+        }
+      }
+    }
   },
   to: {
     type: DataTypes.STRING,
-    allowNull: false
+    allowNull: false,
+    validate: {
+      isValidPosition(value) {
+        if (!/^[a-h][1-8]$/.test(value)) {
+          throw new Error('Posición de ajedrez no válida (debe estar entre a1 y h8)');
+        }
+      }
+    }
   },
   piece: {
-    type: DataTypes.ENUM('torre', 'alfil', 'rey', 'caballo', 'peon', 'reina'),
+    type: DataTypes.STRING,
     allowNull: false,
   },
   gameId: {
     type: DataTypes.INTEGER,
+    allowNull: false,
     references: {
-      model: Game,  // Asegúrate de que este modelo esté definido antes de usarlo
+      model: 'games',
       key: 'id',
     },
     onDelete: 'CASCADE',
   },
 }, {
-  sequelize, // Aquí pasas la instancia de sequelize
+  sequelize,
   modelName: 'Move',
+  tableName: 'moves',
+  timestamps: true 
 });
-
-
 
 module.exports = Move;

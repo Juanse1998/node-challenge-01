@@ -1,5 +1,6 @@
 const Game  = require('./game.js');
 const Move  = require('./move.js');
+const Player = require('./player.js');
 
 Game.hasMany(Move, {
   foreignKey: 'gameId',
@@ -8,5 +9,25 @@ Game.hasMany(Move, {
 
 Move.belongsTo(Game, {
   foreignKey: 'gameId',
-  as: 'game'
+  as: 'games'
+});
+
+Game.belongsTo(Player, {
+  foreignKey: 'whitePlayerId',
+  as: 'whitePlayer'
+});
+
+Game.belongsTo(Player, {
+  foreignKey: 'blackPlayerId',
+  as: 'blackPlayer'
+});
+
+Player.hasMany(Game, {
+  foreignKey: 'whitePlayerId',
+  as: 'gamesAsWhite'
+});
+
+Player.hasMany(Game, {
+  foreignKey: 'blackPlayerId',
+  as: 'gamesAsBlack'
 });
