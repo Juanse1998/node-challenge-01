@@ -1,28 +1,37 @@
-require('dotenv').config();
 const express = require('express');
-const { Pool } = require('pg');
+const { Sequelize } = require('sequelize');
+const Game = require('./models/game.js');
+const Move = require('./models/move.js');
 
 const app = express();
-const port = process.env.PORT || 3000;
-
-const pool = new Pool({
-  user: process.env.POSTGRES_USER,
-  host: process.env.POSTGRES_HOST,
-  database: process.env.POSTGRES_DB,
-  password: process.env.POSTGRES_PASSWORD,
-  port: process.env.POSTGRES_PORT
+const sequelize = new Sequelize('mydatabase', 'admin', 'password', {
+  host: 'postgres',
+  port: 5432,
+  dialect: 'postgres',
 });
 
-app.get('/', async (req, res) => {
+sequelize.authenticate()
+  .then(() => {
+    console.log('Conexión a la base de datos establecida con éxito.');
+  })
+  .catch(err => {
+    console.error('No se pudo conectar a la base de datos:', err);
+  });
+
+// Aca creamos las tablas
+const syncDatabase = async () => {
   try {
-    const result = await pool.query('SELECT NOW()');
-    res.send(`La hora actual en la base de datos es: ${result.rows[0].now}`);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al conectarse a la base de datos');
-  }
-});
+    await Game.sync({ force: true }); // Usa force: true para recrear la tabla si existe
+    await Move.sync({ force: true }); // Usa force: true para recrear la tabla si existe
 
-app.listen(port, () => {
-  console.log(`Backend corriendo en http://localhost:${port}`);
+    console.log('Base de datos sincronizada con éxito.');
+  } catch (error) {
+    console.error('Error al sincronizar la base de datos:', error);
+  }
+};
+
+syncDatabase().then(() => {
+  app.listen(3000, () => {
+    console.log('Servidor corriendo en el puerto 3000');
+  });
 });
