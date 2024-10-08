@@ -10,6 +10,15 @@ Move.init({
     autoIncrement: true,
     primaryKey: true,
   },
+  playerId: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: 'players',
+      key: 'id'
+    },
+    onDelete: 'CASCADE'
+  },
   from: {
     type: DataTypes.STRING,
     allowNull: false,
