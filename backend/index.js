@@ -2,6 +2,9 @@ const express = require('express');
 const { Sequelize } = require('sequelize');
 const Game = require('./models/game.js');
 const Move = require('./models/move.js');
+const Player = require('./models/player.js');
+
+const PORT = 3000;
 
 const app = express();
 const sequelize = new Sequelize('mydatabase', 'admin', 'password', {
@@ -21,9 +24,9 @@ sequelize.authenticate()
 // Aca creamos las tablas
 const syncDatabase = async () => {
   try {
-    await Game.sync({ force: true }); // Usa force: true para recrear la tabla si existe
-    await Move.sync({ force: true }); // Usa force: true para recrear la tabla si existe
-
+    await Player.sync({ force: false });
+    await Game.sync({ force: false }); // Usa force: false para recrear la tabla si existe
+    await Move.sync({ force: false });
     console.log('Base de datos sincronizada con éxito.');
   } catch (error) {
     console.error('Error al sincronizar la base de datos:', error);
@@ -31,7 +34,7 @@ const syncDatabase = async () => {
 };
 
 syncDatabase().then(() => {
-  app.listen(3000, () => {
+  app.listen(PORT, () => {
     console.log('Servidor corriendo en el puerto 3000');
   });
 });

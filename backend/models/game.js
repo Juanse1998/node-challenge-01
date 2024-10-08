@@ -13,18 +13,18 @@ Game.init({
   whitePlayerId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    // references: {
-    //   model: Player,
-    //   key: 'id',
-    // }
+    references: {
+      model: 'players',
+      key: 'id',
+    }
   },
   blackPlayerId: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    // references: {
-    //   model: Player,
-    //   key: 'id',
-    // }
+    references: {
+      model: 'players',
+      key: 'id',
+    }
   },
   startDate: {
     type: DataTypes.DATE,
