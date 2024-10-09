@@ -29,13 +29,22 @@ const createMatch = async (req, res) => {
 
 // Obtener todas las partidas
 const getAllMatches = async (req, res) => {
+  try {
+    const games = await Game.findAll();
+    return res.status(200).json({games});
+  } catch(error) {
+    return res.status(500).json({
+      message: 'Error al buscar las partidas',
+      error
+    })
+  }
 };
 
 // Actualizar una partida
 const updateResult = async (req, res) => {
   const { result } = req.body;
   const gameId = req.params.id;
-  
+
   try {
     const game = await Game.findByPk(gameId);
     if (!game) {
@@ -59,10 +68,51 @@ const updateResult = async (req, res) => {
 
 // Eliminar una partida
 const deleteMatch = async (req, res) => {
+  const gameId = req.params.id;
+  try {
+    const game = await Game.findByPk(gameId);
+    if (!game) {
+      return res.status(404).json({
+        message: 'Partida no encontrada',
+      });
+    }
+    Game.destroy({
+      where: {
+        id: game.id
+      }
+    })
+    return res.status(200).json({
+      message: 'El juego se elimino con exito',
+      game
+    })
+  } catch(error) {
+    return res.status(500).json({
+      message: 'Error al eliminar una partida',
+      error
+    })
+  }
 };
 
 // Obtener una partida por su id
 const getMatchById = async (req, res) => {
+  const gameId = req.params.id;
+  try {
+    const game = await Game.findByPk(gameId);
+    if (!game) {
+      return res.status(404).json({
+        message: 'Partida no encontrada',
+      });
+    }
+    return res.status(200).json({
+      message: 'El juego se encontro con exito',
+      game
+    })
+  } catch(error) {
+    return res.status(500).json({
+      message: 'Error al buscar una partida',
+      error
+    })
+  }
 };
 
 module.exports = {

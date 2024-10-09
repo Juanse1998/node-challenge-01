@@ -14,7 +14,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use('/api/players', playerRoutes);
 app.use('/api/moves', moveRoutes);
-app.use('/api/games', gameRoutes);
+app.use('/api/matches', gameRoutes);
 
 require("dotenv").config();
 
