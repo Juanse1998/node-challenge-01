@@ -1,17 +1,29 @@
 const express = require('express');
+const bodyParser = require('body-parser');
 const { Sequelize } = require('sequelize');
 const Game = require('./models/game.js');
 const Move = require('./models/move.js');
 const Player = require('./models/player.js');
+const playerRoutes = require('./routes/playerRoutes.js');
+const moveRoutes = require('./routes/moveRoutes.js');
+const gameRoutes = require('./routes/gameRoutes.js');
 
 const PORT = 3000;
-
 const app = express();
+app.use(bodyParser.json());
+app.use('/api/players', playerRoutes);
+app.use('/api/moves', moveRoutes);
+app.use('/api/games', gameRoutes);
+
+
 const sequelize = new Sequelize('mydatabase', 'admin', 'password', {
   host: 'postgres',
   port: 5432,
   dialect: 'postgres',
 });
+
+
+
 
 sequelize.authenticate()
   .then(() => {
