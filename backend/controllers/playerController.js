@@ -30,10 +30,15 @@ const createPlayer = async (req, res) => {
   } catch (error) {
     return res.status(500).json({ message: 'Error al crear el jugador', error: error.message });
   }
-
-
 }
 
+const playerExist = async (id) => {
+  console.log('ID', id);
+  const player = await Player.findByPk(id);
+  return player ? true : false;
+} 
+
 module.exports = {
-  createPlayer
+  createPlayer,
+  playerExist
 };
