@@ -20,8 +20,19 @@ require("dotenv").config();
 
 // Sincroniza la base de datos y luego inicia el servidor
 const syncDatabaseAndStartServer = async () => {
+  const initialBoard = [
+    ["T", "C", "A", "D", "R", "A", "C", "T"],
+    ["P", "P", "P", "P", "P", "P", "P", "P"],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    ["p", "p", "p", "p", "p", "p", "p", "p"],
+    ["t", "c", "a", "d", "r", "a", "c", "t"],
+  ];
   try {
-    
+    const boardString = JSON.stringify(initialBoard);
+
     // Autenticación de la base de datos
     await sequelize.authenticate();
     console.log('Conexión a la base de datos establecida con éxito.');
@@ -56,7 +67,7 @@ const syncDatabaseAndStartServer = async () => {
     const gameExists = await Game.findOne({
       where: {
         whitePlayerId: player1.id,
-        blackPlayerId: player2.id,
+        blackPlayerId: player2.id
       },
     });
 
@@ -72,10 +83,13 @@ const syncDatabaseAndStartServer = async () => {
 
     // Crea el juego solo si no existe
     let game;
+      // Tablero inicial del juego
+
     if (!gameExists) {
       game = await Game.create({
         whitePlayerId: player1.id,
         blackPlayerId: player2.id,
+        board: boardString
       });
     } else {
       game = gameExists;
