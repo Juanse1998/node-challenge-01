@@ -3,8 +3,9 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "test": "NODE_ENV=test jest",
     "start": "node index.js",
-    "test": "jest"
+    "aa": "sequelize db:migrate --env test && jest"
   },
   "dependencies": {
     "dotenv": "^10.0.0",

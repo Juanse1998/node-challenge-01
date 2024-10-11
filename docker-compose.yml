@@ -21,8 +21,11 @@ services:
       POSTGRES_PORT: 5432
     depends_on:
       - postgres
+    volumes:
+      - ./init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql
     networks:
       - app-network
+
 
   postgres:
     image: postgres:latest
@@ -30,15 +33,46 @@ services:
       POSTGRES_USER: admin
       POSTGRES_PASSWORD: password
       POSTGRES_DB: mydatabase
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
     ports:
       - "5434:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+      ## - ./init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql # Aca ver si creo un inicializador
+
+    networks:
+      - app-network
+
+  postgres_test:
+    image: postgres:latest
+    environment:
+      NODE_ENV: test
+      TEST_POSTGRES_USER: admin
+      TEST_POSTGRES_PASSWORD: password
+      TEST_POSTGRES_DB: mydatabase_test
+      TEST_POSTGRES_HOST: postgres_test
+      TEST_POSTGRES_PORT: 5435
+    ports:
+      - "5435:5432"
+    volumes:
+      - pgdata_test:/var/lib/postgresql/data
+      - ./init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql 
+    networks:
+      - app-network
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8080:80" 
     networks:
       - app-network
 
 volumes:
   pgdata:
+  pgdata_test:
 
 networks:
   app-network:

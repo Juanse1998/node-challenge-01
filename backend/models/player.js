@@ -10,17 +10,17 @@ Player.init({
     autoIncrement: true,
     primaryKey: true,
   },
-  nombre: {
-    type: DataTypes.INTEGER,
+  name: {
+    type: DataTypes.STRING,
     allowNull: false,
 
   },
   last_name: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   username: {
-    type: DataTypes.INTEGER,
+    type: DataTypes.STRING,
     allowNull: false,
   },
   // Aca podria agregar un metodo para encriptar la password

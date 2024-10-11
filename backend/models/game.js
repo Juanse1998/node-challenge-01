@@ -36,10 +36,14 @@ Game.init({
     allowNull: true,
   },
   state: {
-    type: DataTypes.ENUM('ongoing', 'finished', 'abandoned'),
+    type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'ongoing',
   },
+  board: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  }, 
   result: {
     type: DataTypes.ENUM('white wins', 'black wins', 'tables'),
     allowNull: true,
