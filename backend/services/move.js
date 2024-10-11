@@ -19,33 +19,29 @@ const registerMoves = async (gameId, moves) => {
 
 const handleCreateMove = async (piece, to, from, gameId) => {
   try {
-    // Simular la creación de movimiento como en createMove
     const updatedGame = await updateBoard(piece, to, from, gameId );
     if (!updatedGame) {
       throw new Error('Movimiento inválido');
     }
-
-    // Crear el objeto de movimiento en la estructura adecuada
     const moveData = {
       from: { x: from.x, y: from.y },
       to: { x: to.x, y: to.y },
-      piece: piece // Mantener el nombre de la pieza tal como se proporciona
+      piece: piece
     };
-        // Registrar el movimiento en la tabla de movimientos
     const move = await Move.create({
       gameId: updatedGame.id,
       fromX: from.x,
       fromY: from.y,
       toX: to.x,
       toY: to.y,
-      piece: moveData.piece // Guarda el movimiento en la misma estructura
+      piece: moveData.piece
     });
 
     return {
       message: 'Movimiento realizado con éxito',
-      board: JSON.parse(updatedGame.board),  // Tablero actualizado
-      moveId: move.id,  // ID del movimiento registrado
-      move: moveData, // Incluye los datos del movimiento en la respuesta
+      board: JSON.parse(updatedGame.board),
+      moveId: move.id,
+      move: moveData,
       status: 200,
     };
   } catch (error) {
