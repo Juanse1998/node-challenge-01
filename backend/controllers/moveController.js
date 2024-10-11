@@ -1,43 +1,58 @@
 const Move = require('../models/move.js');
-const { getKnightMoves } = require('../services/pieces/knightController.js')
+const Game = require('../models/game.js');
+const { isValidPosition } = require('../services/move.js')
+const { updateBoard } = require('../services/board.js')
+
 
 const createMove = async (req, res) => {
-  const { piece, to, from, board } = req.body;
+  const { piece, to, from, gameId } = req.body;
 
   // Verificar que piece y sus propiedades están definidos
-  if (!piece || !piece.name || !to || !from || !board) {
+  if (!piece || !piece.name || !to || !from || !gameId) {
     return res.status(400).json({ message: 'Datos incompletos' });
   }
 
-  switch (piece.name) {
-    case 'knight':
-      let validMoves = getKnightMoves(from.x, from.y, board);
-      const isValidMove = validMoves.some(move => move[0] === to.x && move[1] === to.y);
-      
-      if (isValidMove) {
-        // Mover la pieza
-        board[to.x][to.y] = piece;
-        board[from.x][from.y] = null;
+  // Verificar que las coordenadas estén dentro de los límites
+  if (!isValidPosition(from) || !isValidPosition(to)) {
+    return res.status(400).json({ message: 'Coordenadas fuera de límites' });
+  }
 
-        return res.status(200).json({
-          message: 'Movimiento realizado con éxito',
-          board,
-        });
-      } else {
-        return res.status(400).json({
-          message: 'Movimiento invalido para el caballo',
-        });
-      }
-    default:
-      return res.status(400).json({ message: 'Tipo de pieza no soportado' });
+  try {
+    const updatedGame = await updateBoard(gameId, from, to, piece.name);
+    if (!updatedGame) {
+      return res.status(400).json({ message: 'Movimiento inválido' });
+    }
+    const moveData = {
+      from: { x: from.x, y: from.y },
+      to: { x: to.x, y: to.y },
+      piece: piece.name 
+    };
+    const move = await Move.create({
+      gameId: updatedGame.id,
+      fromX: from.x,
+      fromY: from.y,
+      toX: to.x,
+      toY: to.y,
+      piece: moveData.piece
+    });
+
+    return res.status(200).json({
+      message: 'Movimiento realizado con éxito',
+      board: JSON.parse(updatedGame.board),
+      moveId: move.id,
+      move: moveData
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: 'Error al realizar el movimiento',
+      error: error.message
+    });
   }
 };
 
+const getAllMoves = (req, res) => {
 
-// Obtener todas los movimientos
-const getAllMoves = async (req, res) => {
-};
-
+}
 
 module.exports = {
   createMove,

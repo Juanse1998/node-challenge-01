@@ -1,86 +1,48 @@
-// __tests__/move.test.js
+// __tests__/moves.test.js
 const request = require('supertest');
 const express = require('express');
 const bodyParser = require('body-parser');
-const { createMove } = require('../../controllers/moveController.js');
+const { getAllMoves } = require('../../controllers/moveController.js'); // Ajusta la ruta del controlador
 
 const app = express();
 app.use(bodyParser.json());
-app.post('/games/:gameId/moves', createMove);
+app.get('/api/match/:id/moves', getAllMoves);
 
-describe('POST /games/gameId/moves - Valid knight move', () => {
-  it('should successfully move the knight to a valid position', async () => {
+describe('GET /api/match/:id/moves', () => {
+  it('should return all moves in chess notation', async () => {
+    const gameId = 1;
+
+    // Simulamos que se han realizado algunos movimientos
     const response = await request(app)
-      .post('/games/1/moves')
-      .send({
-        piece: { name: 'knight' },
-        from: { x: 1, y: 0 },
-        to: { x: 2, y: 2 }, 
-        board: [
-          [null, { name: 'knight' }, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null]
-        ]
-      });
-      
+      .get(`/api/match/${gameId}/moves`)
+      .expect(200);
+
     expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Movimiento realizado con éxito');
-    
-    // Valido que el tablero este actualizado
-    expect(response.body.board[2][2].name).toBe('knight');
-    expect(response.body.board[1][0]).toBe(null);
+    expect(response.body.moves).toEqual([
+      'a8 -> c7',
+      'd2 -> d4'
+    ]); // Ajusta esto según los movimientos esperados
   });
 
-  it('should successfully move the knight to a valid position', async () => {
+  it('should return 404 if no moves are found', async () => {
+    const gameId = 999; // Un gameId que no existe
+
     const response = await request(app)
-      .post('/games/1/moves')
-      .send({
-        piece: { name: 'knight' },
-        from: { x: 1, y: 0 },
-        to: { x: 3, y: 1 },
-        board: [
-          [null, { name: 'knight' }, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null]
-        ]
-      });
-      
-    expect(response.status).toBe(200);
-    expect(response.body.message).toBe('Movimiento realizado con éxito');
-    expect(response.body.board[3][1].name).toBe('knight');
-    expect(response.body.board[1][0]).toBe(null);
+      .get(`/api/match/${gameId}/moves`)
+      .expect(404);
+
+    expect(response.status).toBe(404);
+    expect(response.body.message).toBe('No se encontraron movimientos para este juego');
   });
 
-  it('should return an error for an invalid knight move', async () => {
-    const response = await request(app)
-      .post('/games/1/moves')
-      .send({
-        piece: { name: 'knight' },
-        from: { x: 1, y: 0 },
-        to: { x: 3, y: 3 },
-        board: [
-          [null, { name: 'knight' }, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null],
-          [null, null, null, null, null, null, null, null]
-        ]
-      });
+  it('should return 500 if there is a server error', async () => {
+    const gameId = 'invalid'; // Un gameId inválido
 
-    expect(response.status).toBe(400);
-    expect(response.body.message).toBe('Movimiento invalido para el caballo');
+    const response = await request(app)
+      .get(`/api/match/${gameId}/moves`)
+      .expect(500);
+
+    expect(response.status).toBe(500);
+    expect(response.body.message).toBe('Error al obtener los movimientos');
   });
 });
