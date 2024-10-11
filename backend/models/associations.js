@@ -32,12 +32,12 @@ Player.hasMany(Game, {
   as: 'gamesAsBlack'
 });
 
-Move.belongTo(Player, {
-  foreignKey: 'playerId',
-  as: 'players'
-});
+// Move.belongTo(Player, {
+//   foreignKey: 'playerId',
+//   as: 'players'
+// });
 
-Player.belongTo(Move, {
-  foreignKey: 'playerId',
-  as: 'moves'
-});
+// Player.belongTo(Move, {
+//   foreignKey: 'playerId',
+//   as: 'moves'
+// });

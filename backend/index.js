@@ -9,40 +9,36 @@ const playerRoutes = require('./routes/playerRoutes.js');
 const moveRoutes = require('./routes/moveRoutes.js');
 const gameRoutes = require('./routes/gameRoutes.js');
 
+const { registerMoves } = require('./services/move.js');
 const PORT = 3000;
 const app = express();
 app.use(bodyParser.json());
 app.use('/api/players', playerRoutes);
-app.use('/api/moves', moveRoutes);
+app.use('/api/match', moveRoutes);
 app.use('/api/matches', gameRoutes);
 
 require("dotenv").config();
 
 // Sincroniza la base de datos y luego inicia el servidor
 const syncDatabaseAndStartServer = async () => {
-  const initialBoard = [
-    ["T", "C", "A", "D", "R", "A", "C", "T"],
-    ["P", "P", "P", "P", "P", "P", "P", "P"],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    ["p", "p", "p", "p", "p", "p", "p", "p"],
-    ["t", "c", "a", "d", "r", "a", "c", "t"],
-  ];
+  const initialBoard = JSON.stringify([
+    ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+    ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+  ]);
+  
   try {
-    const boardString = JSON.stringify(initialBoard);
-
     // Autenticación de la base de datos
     await sequelize.authenticate();
-    console.log('Conexión a la base de datos establecida con éxito.');
-
     // Sincroniza las tablas
     await Player.sync({ force: true });
     await Game.sync({ force: true });
     await Move.sync({ force: true });
-
-    console.log('Base de datos sincronizada con éxito.');
 
     // Usa findOrCreate para evitar la duplicación de jugadores
     const [player1, player1Created] = await Player.findOrCreate({
@@ -71,34 +67,32 @@ const syncDatabaseAndStartServer = async () => {
       },
     });
 
-    const loadMoves = (gameId) => {
-      const moves = [
-        { from: 'e2', to: 'e4', piece: 'pawn', gameId: gameId, playerId: player1.id },
-        { from: 'e5', to: 'e7', piece: 'pawn', gameId: gameId, playerId: player1.id },
-        { from: 'g1', to: 'f3', piece: 'knight', gameId: gameId, playerId: player2.id },
-        { from: 'b8', to: 'c6', piece: 'knight', gameId: gameId, playerId: player2.id },
-      ];
-      return moves;
-    };
 
-    // Crea el juego solo si no existe
     let game;
-      // Tablero inicial del juego
-
+  
+    const completedGameMoves1 = [
+      { from: { x: 4, y: 6 }, to: { x: 4, y: 4 }, piece: 'P' }, // Peón blanco mueve de e2 a e4
+      { from: { x: 4, y: 1 }, to: { x: 4, y: 3 }, piece: 'p' }, // Peón negro mueve de e7 a e5
+      { from: { x: 6, y: 7 }, to: { x: 5, y: 5 }, piece: 'N' }, // Caballo blanco mueve de g1 a f3
+      { from: { x: 1, y: 0 }, to: { x: 2, y: 2 }, piece: 'n' }, // Caballo negro mueve de b8 a c6
+      { from: { x: 3, y: 7 }, to: { x: 7, y: 3 }, piece: 'Q' }, // Dama blanca mueve de d1 a h5
+      { from: { x: 6, y: 0 }, to: { x: 5, y: 2 }, piece: 'n' }, // Caballo negro mueve de g8 a f6
+      { from: { x: 5, y: 7 }, to: { x: 2, y: 4 }, piece: 'B' }, // Alfil blanco mueve de f1 a c4
+      { from: { x: 3, y: 1 }, to: { x: 3, y: 2 }, piece: 'p' }, // Peón negro mueve de d7 a d6
+      { from: { x: 7, y: 3 }, to: { x: 5, y: 1 }, piece: 'Q' }  // Dama blanca jaque mate en f7
+    ];
+    
     if (!gameExists) {
       game = await Game.create({
         whitePlayerId: player1.id,
         blackPlayerId: player2.id,
-        board: boardString
+        board: initialBoard
       });
     } else {
       game = gameExists;
     }
+    const result = registerMoves(game.id, completedGameMoves1, result);
     
-    const moves = loadMoves(game.id);
-    await Move.bulkCreate(moves);
-
-    // Inicia el servidor
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en el puerto ${PORT}`);
     });
@@ -110,3 +104,6 @@ const syncDatabaseAndStartServer = async () => {
 
 // Llama a la función para sincronizar la base de datos y luego iniciar el servidor
 syncDatabaseAndStartServer();
+
+
+

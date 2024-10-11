@@ -36,7 +36,7 @@ Game.init({
     allowNull: true,
   },
   state: {
-    type: DataTypes.ENUM('ongoing', 'finished', 'abandoned'),
+    type: DataTypes.STRING,
     allowNull: false,
     defaultValue: 'ongoing',
   },

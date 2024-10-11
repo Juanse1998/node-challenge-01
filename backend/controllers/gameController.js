@@ -3,6 +3,17 @@ const { playerExist } = require('./playerController.js');
 
 // Crear una nueva partida
 const createMatch = async (req, res) => {
+  const board = [
+    ["T", "C", "A", "D", "R", "A", "C", "T"],
+    ["P", "P", "P", "P", "P", "P", "P", "P"],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    [" ", " ", " ", " ", " ", " ", " ", " "],
+    ["p", "p", "p", "p", "p", "p", "p", "p"],
+    ["t", "c", "a", "d", "r", "a", "c", "t"],
+  ];
+  const boardString = JSON.stringify(board);
   const { playerWhiteId, playerBlackId } = req.body;
   try {
     const playerWhite = await playerExist(playerWhiteId);
@@ -13,8 +24,7 @@ const createMatch = async (req, res) => {
         error
       })
     }
-    const response = await Game.create({whitePlayerId: playerWhiteId, blackPlayerId: playerBlackId })
-    console.log('RESPONSE', response)
+    const response = await Game.create({whitePlayerId: playerWhiteId, blackPlayerId: playerBlackId, board: boardString })
     return res.status(201).json({
       message: 'Partida creada con exito',
       game: response,
@@ -65,6 +75,7 @@ const updateResult = async (req, res) => {
     })
   }
 };
+
 
 // Eliminar una partida
 const deleteMatch = async (req, res) => {
