@@ -9,7 +9,7 @@ Game.hasMany(Move, {
 
 Move.belongsTo(Game, {
   foreignKey: 'gameId',
-  as: 'games'
+  as: 'game'
 });
 
 Game.belongsTo(Player, {

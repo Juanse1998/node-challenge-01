@@ -5,7 +5,7 @@ const registerMoves = async (gameId, moves) => {
   for (const move of moves) {
     try {
       const piece = { name: move.piece };
-      const response = await handleCreateMove(piece.name, move.to, move.from, gameId);
+      const response = await handleCreateMove(gameId, move.from, move.to, piece.name);
       if (response.status !== 200) {
         console.error(`Error al registrar el movimiento desde ${move.from.x}, ${move.from.y} a ${move.to.x}, ${move.to.y}: ${response.message}`);
         break;
@@ -17,9 +17,9 @@ const registerMoves = async (gameId, moves) => {
   }
 };
 
-const handleCreateMove = async (piece, to, from, gameId) => {
+const handleCreateMove = async (gameId, from, to, piece) => {
   try {
-    const updatedGame = await updateBoard(piece, to, from, gameId );
+    const updatedGame = await updateBoard(gameId, from, to, piece);
     if (!updatedGame) {
       throw new Error('Movimiento inválido');
     }
