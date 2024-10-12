@@ -10,9 +10,6 @@ const createMove = async (req, res) => {
   console.log('to', to);
   console.log('from', from);
   console.log('gameId', gameId);
-
-
-
   // Verificar que piece y sus propiedades están definidos
   if (!piece || !to || !from || !gameId) {
     return res.status(400).json({ message: 'Datos incompletos' });

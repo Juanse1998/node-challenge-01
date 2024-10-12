@@ -85,31 +85,13 @@ const syncDatabaseAndStartServer = async () => {
       { from: { x: 7, y: 3 }, to: { x: 5, y: 1 }, piece: 'Q' }  // Dama blanca jaque mate en f7
     ];
 
-    const completedGameMoves2 = [
-      { from: { x: 4, y: 6 }, to: { x: 4, y: 4 }, piece: 'P' }, // Peón blanco mueve de e2 a e4
-      { from: { x: 4, y: 1 }, to: { x: 4, y: 3 }, piece: 'p' }, // Peón negro mueve de e7 a e5
-      { from: { x: 6, y: 7 }, to: { x: 5, y: 5 }, piece: 'N' }, // Caballo blanco mueve de g1 a f3
-      { from: { x: 1, y: 0 }, to: { x: 2, y: 2 }, piece: 'n' }, // Caballo negro mueve de b8 a c6
-      { from: { x: 5, y: 7 }, to: { x: 2, y: 4 }, piece: 'B' }, // Alfil blanco mueve de f1 a c4
-      { from: { x: 6, y: 1 }, to: { x: 6, y: 2 }, piece: 'p' }, // Peón negro mueve de g7 a g6
-      { from: { x: 3, y: 7 }, to: { x: 7, y: 3 }, piece: 'Q' }, // Reina blanca mueve de d1 a h5
-      { from: { x: 5, y: 1 }, to: { x: 5, y: 0 }, piece: 'p' }, // Peón negro mueve de f7 a f6
-      { from: { x: 5, y: 5 }, to: { x: 4, y: 5 }, piece: 'N' }, // Caballo blanco mueve de f3 a e5
-      { from: { x: 7, y: 3 }, to: { x: 5, y: 5 }, piece: 'Q' }, // Reina blanca mueve de h5 a f7 (jaque mate)
-    ];
     
-    
-    const gameTwo = await Game.create({
+    const gameOne = await Game.create({
       whitePlayerId: player1.id,
       blackPlayerId: player2.id,
-      board: initialBoard
+      board: initialBoard,
+      result: 'white wins'
     });
-    const gameThree = await Game.create({
-      whitePlayerId: player1.id,
-      blackPlayerId: player2.id,
-      board: initialBoard
-    });
-
     if (!gameExists) {
       game = await Game.create({
         whitePlayerId: player1.id,
@@ -119,8 +101,7 @@ const syncDatabaseAndStartServer = async () => {
     } else {
       game = gameExists;
     }
-    registerMoves(game.id, completedGameMoves1);
-    registerMoves(gameTwo.id, completedGameMoves2)
+    registerMoves(gameOne.id, completedGameMoves1)
 
     
     app.listen(PORT, () => {

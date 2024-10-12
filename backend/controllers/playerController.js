@@ -38,7 +38,25 @@ const playerExist = async (id) => {
   return player ? true : false;
 } 
 
+const getAllPlayers = async (_, res) => {
+  try {
+    // Buscar movimientos que pertenecen a un juego específico
+    const players = await Player.findAll();
+
+    // Si no se encuentran movimientos, devolver un mensaje adecuado
+    if (players.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron movimientos para esta partida.' });
+    }
+
+    return res.status(200).json({ players }); // Devolver los movimientos encontrados
+  } catch (error) {
+    console.error('Error al obtener los movimientos:', error);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
 module.exports = {
   createPlayer,
-  playerExist
+  playerExist,
+  getAllPlayers
 };

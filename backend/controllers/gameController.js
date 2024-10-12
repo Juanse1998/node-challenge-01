@@ -4,15 +4,15 @@ const { playerExist } = require('./playerController.js');
 // Crear una nueva partida
 const createMatch = async (req, res) => {
   const board = [
-    ["T", "C", "A", "D", "R", "A", "C", "T"],
-    ["P", "P", "P", "P", "P", "P", "P", "P"],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    [" ", " ", " ", " ", " ", " ", " ", " "],
-    ["p", "p", "p", "p", "p", "p", "p", "p"],
-    ["t", "c", "a", "d", "r", "a", "c", "t"],
-  ];
+    ['r', 'n', 'b', 'q', 'k', 'b', 'n', 'r'],
+    ['p', 'p', 'p', 'p', 'p', 'p', 'p', 'p'],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    [' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '],
+    ['P', 'P', 'P', 'P', 'P', 'P', 'P', 'P'],
+    ['R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R']
+  ]
   const boardString = JSON.stringify(board);
   const { playerWhiteId, playerBlackId } = req.body;
   try {
