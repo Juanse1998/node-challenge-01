@@ -3,6 +3,7 @@ import './App.css'; // Asegúrate de importar el archivo CSS
 import GamesList from './components/GamesList.jsx';
 import MovesList from './components/MovesList.jsx';
 import Board from './components/Board.jsx';
+import Login from './components/Login.jsx';
 
 const App = () => {
   const [games, setGames] = useState([]);
@@ -12,7 +13,8 @@ const App = () => {
   const [players, setPlayers] = useState([]);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [fromPosition, setFromPosition] = useState(null);
-
+  const [token, setToken] = useState(null);
+  
   useEffect(() => {
     const fetchGames = async () => {
       try {
@@ -123,30 +125,36 @@ const App = () => {
   };
 
   return (
-    <div className="App">
-      <h1>Partidas de Ajedrez</h1>
-      <div className="button-container">
-        <button onClick={handleCreateGame}>Crear Partida</button>
+      <div className="App">
+        <h1>Partidas de Ajedrez</h1>
+        {!token ? (
+          <Login setToken={setToken} />
+        ) : (
+          <>
+            <div className="button-container">
+              <button onClick={handleCreateGame}>Crear Partida</button>
+            </div>
+            <div className="games-list">
+              <GamesList games={games} setGames={setGames} />
+            </div>
+            {selectedGameId && (
+              <>
+                <Board
+                  board={board}
+                  onCellClick={handleCellClick}
+                  gameId={selectedGameId}
+                  updateBoard={updateBoard}
+                  addMoveToList={addMoveToList}
+                  setSelectedGameMoves={setSelectedGameMoves}
+                />
+                <div className="moves-list">
+                  <MovesList moves={selectedGameMoves} />
+                </div>
+              </>
+            )}
+          </>
+        )}
       </div>
-      <div className="games-list">
-        <GamesList games={games} setGames={setGames} />
-      </div>
-      {selectedGameId && (
-        <>
-          <Board
-            board={board}
-            onCellClick={handleCellClick}
-            gameId={selectedGameId}
-            updateBoard={updateBoard}
-            addMoveToList={addMoveToList}
-            setSelectedGameMoves={setSelectedGameMoves}
-          />
-          <div className="moves-list">
-            <MovesList moves={selectedGameMoves} />
-          </div>
-        </>
-      )}
-    </div>
   );
 };
 

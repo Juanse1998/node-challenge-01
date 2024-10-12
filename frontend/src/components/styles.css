@@ -40,3 +40,27 @@ button:hover {
 .bg-red-600:hover {
   background-color: #c82333; /* Color rojo oscuro al pasar el ratón */
 }
+
+
+.login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+button:hover {
+  background-color: #0056b3; /* Color al pasar el ratón */
+}
+
+.text-red-500 {
+  color: #e3342f; /* Color rojo para errores */
+}
