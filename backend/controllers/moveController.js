@@ -6,15 +6,13 @@ const { updateBoard } = require('../services/board.js')
 
 const createMove = async (req, res) => {
   const { piece, to, from, gameId } = req.body;
-
+  console.log('GAMeID', piece);
+  console.log('to', to);
+  console.log('from', from);
+  console.log('gameId', gameId);
   // Verificar que piece y sus propiedades están definidos
-  if (!piece || !piece.name || !to || !from || !gameId) {
+  if (!piece || !to || !from || !gameId) {
     return res.status(400).json({ message: 'Datos incompletos' });
-  }
-
-  // Verificar que las coordenadas estén dentro de los límites
-  if (!isValidPosition(from) || !isValidPosition(to)) {
-    return res.status(400).json({ message: 'Coordenadas fuera de límites' });
   }
 
   try {
@@ -25,7 +23,7 @@ const createMove = async (req, res) => {
     const moveData = {
       from: { x: from.x, y: from.y },
       to: { x: to.x, y: to.y },
-      piece: piece.name 
+      piece: piece 
     };
     const move = await Move.create({
       gameId: updatedGame.id,
@@ -50,9 +48,30 @@ const createMove = async (req, res) => {
   }
 };
 
-const getAllMoves = (req, res) => {
+const getAllMoves = async (req, res) => {
+  const gameId = req.params.id;
 
-}
+  try {
+    // Buscar movimientos que pertenecen a un juego específico
+    const moves = await Move.findAll({
+      where: {
+        gameId: gameId // Filtrar por gameId
+      }
+    });
+
+    // Si no se encuentran movimientos, devolver un mensaje adecuado
+    if (moves.length === 0) {
+      return res.status(404).json({ message: 'No se encontraron movimientos para esta partida.' });
+    }
+
+    return res.status(200).json({ moves }); // Devolver los movimientos encontrados
+  } catch (error) {
+    console.error('Error al obtener los movimientos:', error);
+    return res.status(500).json({ message: 'Error interno del servidor' });
+  }
+};
+
+
 
 module.exports = {
   createMove,

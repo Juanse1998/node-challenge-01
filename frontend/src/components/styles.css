@@ -1,0 +1,66 @@
+h2 {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  margin-bottom: 0.5rem;
+}
+
+button {
+  background-color: #007bff; /* Color de fondo */
+  color: white; /* Color del texto */
+  border: none; /* Sin borde */
+  padding: 0.5rem 1rem; /* Espaciado interno */
+  border-radius: 0.25rem; /* Bordes redondeados */
+  cursor: pointer; /* Cursor de mano */
+  margin-right: 0.5rem; /* Margen derecho */
+  transition: background-color 0.3s; /* Efecto de transición */
+}
+
+button:hover {
+  background-color: #0056b3; /* Color al pasar el ratón */
+}
+
+.bg-red-500 {
+  background-color: #dc3545; /* Color rojo */
+}
+
+.bg-red-600:hover {
+  background-color: #c82333; /* Color rojo oscuro al pasar el ratón */
+}
+
+
+.login-container {
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+
+button:hover {
+  background-color: #0056b3; /* Color al pasar el ratón */
+}
+
+.text-red-500 {
+  color: #e3342f; /* Color rojo para errores */
+}

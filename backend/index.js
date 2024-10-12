@@ -13,6 +13,9 @@ const { registerMoves } = require('./services/move.js');
 const PORT = 3000;
 const app = express();
 app.use(bodyParser.json());
+const cors = require('cors');
+app.use(cors());
+
 app.use('/api/players', playerRoutes);
 app.use('/api/match', moveRoutes);
 app.use('/api/matches', gameRoutes);
@@ -58,16 +61,6 @@ const syncDatabaseAndStartServer = async () => {
         password: '123456',
       },
     });
-
-    // Verifica si ya existe una partida con estos jugadores
-    const gameExists = await Game.findOne({
-      where: {
-        whitePlayerId: player1.id,
-        blackPlayerId: player2.id
-      },
-    });
-
-
     let game;
   
     const completedGameMoves1 = [
@@ -81,17 +74,17 @@ const syncDatabaseAndStartServer = async () => {
       { from: { x: 3, y: 1 }, to: { x: 3, y: 2 }, piece: 'p' }, // Peón negro mueve de d7 a d6
       { from: { x: 7, y: 3 }, to: { x: 5, y: 1 }, piece: 'Q' }  // Dama blanca jaque mate en f7
     ];
+
     
-    if (!gameExists) {
-      game = await Game.create({
-        whitePlayerId: player1.id,
-        blackPlayerId: player2.id,
-        board: initialBoard
-      });
-    } else {
-      game = gameExists;
-    }
-    const result = registerMoves(game.id, completedGameMoves1, result);
+    const gameOne = await Game.create({
+      whitePlayerId: player1.id,
+      blackPlayerId: player2.id,
+      board: initialBoard,
+      result: 'white wins'
+    });
+
+    registerMoves(gameOne.id, completedGameMoves1)
+
     
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en el puerto ${PORT}`);
