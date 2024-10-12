@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import Board from './Board.jsx';
 import MovesList from './MovesList.jsx';
 
-const GamesList = ({ games }) => {
+import './styles.css';
+
+const GamesList = ({ games, setGames }) => {
   const [selectedGame, setSelectedGame] = useState(null);
   const [movesGame, setMovesGame] = useState([]);
   const [board, setBoard] = useState([]);
@@ -36,34 +38,63 @@ const GamesList = ({ games }) => {
       }
     } else {
       // Mueve la pieza seleccionada
-      // VER ESTO
       const newBoard = board.map((row) => row.slice());
       newBoard[rowIndex][colIndex] = selectedPiece.piece;
       newBoard[selectedPiece.rowIndex][selectedPiece.colIndex] = ' ';
-
       setBoard(newBoard);
       setSelectedPiece(null);
     }
   };
 
+  const handleDeleteGame = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:3000/api/matches/${id}`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        const newGames = games.filter((e) => e.id !== id);
+        setGames(newGames);
+      }
+    } catch (error) {
+      console.log('Error fetching moves:', error);
+    }
+  };
+
   return (
     <div>
-      <h2>Lista de Partidas</h2>
-      <ul>
+      <h2 className="text-xl font-bold mb-4">Lista de Partidas</h2>
+      <ul className="list-none p-0">
         {games.map((game) => (
-          <li key={game.id}>
-            <button onClick={() => handleSelectGame(game.id)}>
-              Partida #{game.id} - {game.date}
+          <li key={game.id} className="mb-2">
+            <button
+              onClick={() => handleSelectGame(game.id)}
+              className="bg-blue-500 text-white py-1 px-4 rounded mr-2 hover:bg-blue-600 transition"
+            >
+              VER PARTIDA - {game.id}
+            </button>
+            <button
+              onClick={() => handleDeleteGame(game.id)}
+              className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-600 transition"
+            >
+              Eliminar partida
             </button>
           </li>
         ))}
       </ul>
 
       {selectedGame && (
-        <div>
-          <h3>Partida {selectedGame.id}</h3>
-          <b>Ganador: {selectedGame.result} </b>
-          <Board board={board} gameId={selectedGame.id} onCellClick={handleCellClick} />
+        <div className="mt-4">
+          <h3 className="text-lg font-semibold">Partida {selectedGame.id}</h3>
+          <b>Ganador: {selectedGame.result}</b>
+          <Board
+            board={board}
+            gameId={selectedGame.id}
+            onCellClick={handleCellClick}
+            className="mt-4"
+          />
           <MovesList moves={movesGame} />
         </div>
       )}

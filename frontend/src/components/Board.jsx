@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList }) => {
-  console.log('Movimiento', board);
+const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSelectedGameMoves }) => {
   const [selectedPiece, setSelectedPiece] = useState(null); // Estado para la pieza seleccionada
   const [fromPosition, setFromPosition] = useState(null); // Estado para la posición de origen
 
@@ -39,6 +38,7 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList }) => {
 
   const handleCellClick = async (rowIndex, colIndex) => {
     const piece = board[rowIndex][colIndex];
+    console.log('FROMPOSITION', fromPosition);
 
     if (selectedPiece) {
       const to = { x: colIndex, y: rowIndex };
@@ -57,6 +57,14 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList }) => {
         updatedBoard[to.y][to.x] = selectedPiece;
 
         updateBoard(response.board);
+        const newMove = {
+          piece: selectedPiece,
+          fromX: fromPosition.x,
+          fromY: fromPosition.y,
+          toX: colIndex,
+          toY: rowIndex,
+        }
+        setSelectedGameMoves(prevMoves => [...prevMoves, newMove]); 
 
         addMoveToList({
           piece: selectedPiece,
@@ -85,7 +93,7 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList }) => {
           <div key={index} style={styles.label}>{letter}</div>
         ))}
       </div>
-
+  
       <div style={styles.boardContainer}>
         {/* Números (1-8) en el lado izquierdo */}
         <div style={styles.leftLabels}>
@@ -93,19 +101,19 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList }) => {
             <div key={index} style={styles.label}>{number}</div>
           ))}
         </div>
-
+  
         {/* Tablero de ajedrez */}
         <div style={styles.board}>
           {board.map((row, rowIndex) => (
             <div key={rowIndex} style={styles.row}>
               {row.map((piece, colIndex) => {
                 const backgroundColor = (rowIndex + colIndex) % 2 === 0 ? '#f0d9b5' : '#b58863';
-
+  
                 return (
                   <div
                     key={colIndex}
                     style={{ ...styles.cell, backgroundColor }}
-                    onClick={() => handleCellClick(rowIndex, colIndex)}
+                    onClick={() => handleCellClick(rowIndex, colIndex)} // Aquí mantenemos el orden natural de las filas
                   >
                     {getPieceImage(piece) && (
                       <img
@@ -123,6 +131,8 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList }) => {
       </div>
     </div>
   );
+  
+  
 };
 
 // Estilos para el tablero, las celdas y la notación de ajedrez
