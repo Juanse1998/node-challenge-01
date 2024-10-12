@@ -61,16 +61,6 @@ const syncDatabaseAndStartServer = async () => {
         password: '123456',
       },
     });
-
-    // Verifica si ya existe una partida con estos jugadores
-    const gameExists = await Game.findOne({
-      where: {
-        whitePlayerId: player1.id,
-        blackPlayerId: player2.id
-      },
-    });
-
-
     let game;
   
     const completedGameMoves1 = [
@@ -92,15 +82,7 @@ const syncDatabaseAndStartServer = async () => {
       board: initialBoard,
       result: 'white wins'
     });
-    if (!gameExists) {
-      game = await Game.create({
-        whitePlayerId: player1.id,
-        blackPlayerId: player2.id,
-        board: initialBoard
-      });
-    } else {
-      game = gameExists;
-    }
+
     registerMoves(gameOne.id, completedGameMoves1)
 
     
