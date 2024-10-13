@@ -21,7 +21,6 @@ const App = () => {
 
   return (
       <div className="App">
-        <h1>Partidas de Ajedrez</h1>
         {!token ? (
           <Login setToken={setToken} />
         ) : (

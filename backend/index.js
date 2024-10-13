@@ -4,9 +4,6 @@ const sequelize = require('./config/database.js');
 const bcrypt = require('bcryptjs');
 const app = express();
 const cors = require('cors');
-
-
-
 const Game = require('./models/game.js');
 const Move = require('./models/move.js');
 const Player = require('./models/player.js');
@@ -14,16 +11,12 @@ const playerRoutes = require('./routes/playerRoutes.js');
 const moveRoutes = require('./routes/moveRoutes.js');
 const gameRoutes = require('./routes/gameRoutes.js');
 const authRoutes = require('./routes/authRoutes.js');
-
 const { registerMoves } = require('./services/move.js');
 
-
 const PORT = 3000;
+
 app.use(bodyParser.json());
-app.use(cors({
-  origin: 'http://localhost:3001',
-  credentials: true
-}));
+app.use(cors());
 
 app.use('/api/players', playerRoutes);
 app.use('/api/match', moveRoutes);
@@ -109,9 +102,6 @@ const syncDatabaseAndStartServer = async () => {
       { from: { x: 6, y: 6 }, to: { x: 6, y: 7 }, piece: 'Q' }, // Dama blanca se mueve a g7 para defender
       { from: { x: 2, y: 2 }, to: { x: 3, y: 4 }, piece: 'n' }, // Caballo negro da jaque mate en e3
     ];
-    
-
-    
     
     const gameOne = await Game.create({
       whitePlayerId: player1.id,
