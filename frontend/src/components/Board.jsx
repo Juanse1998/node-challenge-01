@@ -41,12 +41,7 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
     console.log('FROMPOSITION', fromPosition);
   
     if (selectedPiece) {
-      // Si hay una pieza seleccionada, intentamos moverla
       const to = { x: colIndex, y: rowIndex };
-  
-      // Verificamos si el movimiento es válido (esto es opcional, pero recomendado)
-      // Aquí podrías agregar lógica para validar el movimiento
-  
       const moveData = {
         piece: selectedPiece,
         from: fromPosition,
@@ -58,10 +53,9 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
   
       if (response) {
         const updatedBoard = board.map((row) => [...row]);
-        updatedBoard[fromPosition.y][fromPosition.x] = ' '; // Limpia la posición de origen
-        updatedBoard[to.y][to.x] = selectedPiece; // Coloca la pieza en la nueva posición
-  
-        updateBoard(updatedBoard); // Actualiza el estado del tablero con el nuevo tablero
+        updatedBoard[fromPosition.y][fromPosition.x] = ' ';
+        updatedBoard[to.y][to.x] = selectedPiece;
+        updateBoard(updatedBoard);
   
         const newMove = {
           piece: selectedPiece,
@@ -72,14 +66,12 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
         };
         setSelectedGameMoves((prevMoves) => [...prevMoves, newMove]);
   
-        addMoveToList(newMove); // Agrega el movimiento a la lista de movimientos
+        addMoveToList(newMove); 
       }
   
-      // Restablece la selección después de mover
       setSelectedPiece(null);
       setFromPosition(null);
     } else {
-      // Si no hay pieza seleccionada, seleccionamos la pieza actual
       if (piece !== ' ') {
         setSelectedPiece(piece);
         setFromPosition({ x: colIndex, y: rowIndex });
