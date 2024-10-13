@@ -7,7 +7,7 @@ const Login = ({ setToken }) => {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
       const response = await fetch('http://localhost:3000/api/login', {
@@ -29,11 +29,14 @@ const Login = ({ setToken }) => {
       setError(err.message);
     }
   };
+  
+
+
 
   return (
     <div className="login-container">
       <h2 className="text-2xl font-bold mb-4">Iniciar Sesión</h2>
-      <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+      <form onSubmit={handleLogin} className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div className="mb-4">
           <label className="block text-gray-700 text-sm font-bold mb-2" htmlFor="username">
             Nombre de usuario

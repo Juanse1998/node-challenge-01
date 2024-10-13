@@ -3,8 +3,9 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Player = require('../models/player.js')
 
-const router = express.Router();
-const JWT_SECRET = 'el_toke_de_tu_vida';
+const JWT_SECRET = 'el_token_de_tu_vida';
+
+let revokedTokens = [];
 
 // Ruta para iniciar sesión
 const login = async (req, res) => {
@@ -25,7 +26,7 @@ const login = async (req, res) => {
     }
 
     // Crear un token JWT
-    const token = jwt.sign({ id: player.id }, JWT_SECRET, { expiresIn: '5h' });
+    const token = jwt.sign({ id: player.id }, JWT_SECRET, { expiresIn: '1h' });
     
     // Enviar el token al cliente
     res.json({ token });
@@ -35,6 +36,40 @@ const login = async (req, res) => {
   }
 };
 
+// Ruta para cerrar sesión
+const logout = async (req, res) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Token no proporcionado' });
+  }
+
+  // Revocar el token (lo añadimos a la lista de tokens revocados)
+  revokedTokens.push(token);
+  res.json({ message: 'Sesión cerrada exitosamente' });
+};
+
+const verifyToken = (req, res, next) => {
+  const token = req.headers.authorization?.split(' ')[1];
+
+  if (!token) {
+    return res.status(401).json({ message: 'Acceso denegado' });
+  }
+  if (revokedTokens.includes(token)) {
+    return res.status(401).json({ message: 'Token inválido, por favor inicia sesión nuevamente' });
+  }
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded; // Pasar la información decodificada a la siguiente función
+    next();
+  } catch (error) {
+    return res.status(401).json({ message: 'Token inválido o expirado' });
+  }
+};
+
 module.exports = {
-  login
+  login,
+  logout,
+  verifyToken
 };

@@ -6,6 +6,7 @@ const app = express();
 const cors = require('cors');
 
 
+
 const Game = require('./models/game.js');
 const Move = require('./models/move.js');
 const Player = require('./models/player.js');
@@ -19,7 +20,10 @@ const { registerMoves } = require('./services/move.js');
 
 const PORT = 3000;
 app.use(bodyParser.json());
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3001',
+  credentials: true
+}));
 
 app.use('/api/players', playerRoutes);
 app.use('/api/match', moveRoutes);

@@ -40,7 +40,6 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data
       ## - ./init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql # Aca ver si creo un inicializador
-
     networks:
       - app-network
 
@@ -60,6 +59,7 @@ services:
       - ./init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql 
     networks:
       - app-network
+      
   pgadmin:
     image: dpage/pgadmin4
     environment:
