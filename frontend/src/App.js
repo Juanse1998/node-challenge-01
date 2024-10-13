@@ -13,7 +13,7 @@ const App = () => {
   const [players, setPlayers] = useState([]);
   const [selectedPiece, setSelectedPiece] = useState(null);
   const [fromPosition, setFromPosition] = useState(null);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(() => localStorage.getItem('token'));
   
   useEffect(() => {
     const fetchGames = async () => {
@@ -28,6 +28,11 @@ const App = () => {
     getPlayers();
     fetchGames();
   }, []);
+
+  const handleSetToken = (newToken) => {
+    setToken(newToken);
+    localStorage.setItem('token', newToken);
+  };
 
   const getPlayers = async () => {
     try {
@@ -128,7 +133,7 @@ const App = () => {
       <div className="App">
         <h1>Partidas de Ajedrez</h1>
         {!token ? (
-          <Login setToken={setToken} />
+          <Login setToken={handleSetToken} />
         ) : (
           <>
             <div className="button-container">

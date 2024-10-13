@@ -39,45 +39,47 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
   const handleCellClick = async (rowIndex, colIndex) => {
     const piece = board[rowIndex][colIndex];
     console.log('FROMPOSITION', fromPosition);
-
+  
     if (selectedPiece) {
+      // Si hay una pieza seleccionada, intentamos moverla
       const to = { x: colIndex, y: rowIndex };
+  
+      // Verificamos si el movimiento es válido (esto es opcional, pero recomendado)
+      // Aquí podrías agregar lógica para validar el movimiento
+  
       const moveData = {
         piece: selectedPiece,
         from: fromPosition,
         to,
         gameId,
       };
-
+  
       const response = await sendMove(moveData);
-
+  
       if (response) {
         const updatedBoard = board.map((row) => [...row]);
-        updatedBoard[fromPosition.y][fromPosition.x] = ' ';
-        updatedBoard[to.y][to.x] = selectedPiece;
-
-        updateBoard(response.board);
+        updatedBoard[fromPosition.y][fromPosition.x] = ' '; // Limpia la posición de origen
+        updatedBoard[to.y][to.x] = selectedPiece; // Coloca la pieza en la nueva posición
+  
+        updateBoard(updatedBoard); // Actualiza el estado del tablero con el nuevo tablero
+  
         const newMove = {
           piece: selectedPiece,
           fromX: fromPosition.x,
           fromY: fromPosition.y,
           toX: colIndex,
           toY: rowIndex,
-        }
-        setSelectedGameMoves(prevMoves => [...prevMoves, newMove]); 
-
-        addMoveToList({
-          piece: selectedPiece,
-          fromX: fromPosition.x,
-          fromY: fromPosition.y,
-          toX: colIndex,
-          toY: rowIndex,
-        });
+        };
+        setSelectedGameMoves((prevMoves) => [...prevMoves, newMove]);
+  
+        addMoveToList(newMove); // Agrega el movimiento a la lista de movimientos
       }
-
+  
+      // Restablece la selección después de mover
       setSelectedPiece(null);
       setFromPosition(null);
     } else {
+      // Si no hay pieza seleccionada, seleccionamos la pieza actual
       if (piece !== ' ') {
         setSelectedPiece(piece);
         setFromPosition({ x: colIndex, y: rowIndex });
@@ -95,7 +97,7 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
       </div>
   
       <div style={styles.boardContainer}>
-        {/* Números (1-8) en el lado izquierdo */}
+        {/* Números (1-8) en el lado izquierdo - invertido */}
         <div style={styles.leftLabels}>
           {[8, 7, 6, 5, 4, 3, 2, 1].map((number, index) => (
             <div key={index} style={styles.label}>{number}</div>
@@ -113,7 +115,7 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
                   <div
                     key={colIndex}
                     style={{ ...styles.cell, backgroundColor }}
-                    onClick={() => handleCellClick(rowIndex, colIndex)} // Aquí mantenemos el orden natural de las filas
+                    onClick={() => handleCellClick(rowIndex, colIndex)}
                   >
                     {getPieceImage(piece) && (
                       <img
@@ -131,9 +133,7 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
       </div>
     </div>
   );
-  
-  
-};
+}
 
 // Estilos para el tablero, las celdas y la notación de ajedrez
 const styles = {

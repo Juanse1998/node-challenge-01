@@ -2,14 +2,13 @@ import React, { useState } from 'react';
 
 import './styles.css';
 
-const Login = () => {
+const Login = ({ setToken }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // Lógica para autenticar al usuario
     try {
       const response = await fetch('http://localhost:3000/api/login', {
         method: 'POST',
@@ -20,13 +19,12 @@ const Login = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Error en las credenciales'); // Manejo de error
+        throw new Error('Error en las credenciales');
       }
 
       const data = await response.json();
-      // Aquí puedes guardar el token o la información del usuario
-      console.log('Login exitoso:', data);
-      // Redirigir a otra página o actualizar el estado de la aplicación
+      setToken(data.token);
+
     } catch (err) {
       setError(err.message);
     }
