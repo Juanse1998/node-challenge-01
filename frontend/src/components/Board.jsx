@@ -106,7 +106,6 @@ const Board = ({ board, updateBoard, gameId, setSelectedGameMoves }) => {
             <div key={rowIndex} style={styles.row}>
               {row.map((piece, colIndex) => {
                 const backgroundColor = (rowIndex + colIndex) % 2 === 0 ? '#f0d9b5' : '#b58863';
-  
                 return (
                   <div
                     key={colIndex}
