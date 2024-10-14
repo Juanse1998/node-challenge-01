@@ -2,7 +2,7 @@
 const request = require('supertest');
 const express = require('express');
 const bodyParser = require('body-parser');
-const { getAllMoves, createMove } = require('../../controllers/moveController.js'); // Ajusta la ruta del controlador
+const { getAllMoves, createMove } = require('../../controllers/moveController');
 
 const app = express();
 app.use(bodyParser.json());
@@ -10,7 +10,7 @@ app.get('/api/match/:id/moves', getAllMoves);
 app.post('/api/match/:id/moves', createMove);
 
 describe('GET /api/match/:id/moves', () => {
-  it('should return all moves in chess notation', async () => {
+  it('debería devolver todos los movimientos en notación de ajedrez', async () => {
     const gameId = 1;
 
     const response = await request(app)
@@ -24,9 +24,8 @@ describe('GET /api/match/:id/moves', () => {
     ]);
   });
 
-  it('should return 404 if no moves are found', async () => {
-    const gameId = 999; // Un gameId que no existe
-
+  it('debería devolver 404 si no se encuentran movimientos', async () => {
+    const gameId = 999;
     const response = await request(app)
       .get(`/api/match/${gameId}/moves`)
       .expect(404);
@@ -35,7 +34,7 @@ describe('GET /api/match/:id/moves', () => {
     expect(response.body.message).toBe('No se encontraron movimientos para este juego');
   });
 
-  it('should return 500 if there is a server error', async () => {
+  it('debería devolver 500 si hay un error en el servidor', async () => {
     const gameId = 'invalid'; // Un gameId inválido
 
     const response = await request(app)
@@ -43,12 +42,12 @@ describe('GET /api/match/:id/moves', () => {
       .expect(500);
 
     expect(response.status).toBe(500);
-    expect(response.body.message).toBe('Error al obtener los movimientos');
+    expect(response.body.message).toBe('Error interno del servidor');
   });
 });
 
 describe('POST /api/match/:id/moves', () => {
-  it('should create a new move and return success message', async () => {
+  it('debería crear un nuevo movimiento y devolver un mensaje de éxito', async () => {
     const gameId = 1;
     const moveData = {
       piece: { name: 'Knight' }, // Define el nombre de la pieza
@@ -71,7 +70,7 @@ describe('POST /api/match/:id/moves', () => {
     });
   });
 
-  it('should return 400 if move data is incomplete', async () => {
+  it('debería devolver 400 si los datos del movimiento están incompletos', async () => {
     const gameId = 1;
     const moveData = {
       piece: { name: 'Knight' }, // Datos incompletos (falta `to` y `from`)
@@ -87,7 +86,7 @@ describe('POST /api/match/:id/moves', () => {
     expect(response.body.message).toBe('Datos incompletos');
   });
 
-  it('should return 400 if the move is invalid', async () => {
+  it('debería devolver 400 si el movimiento es inválido', async () => {
     const gameId = 1;
     const moveData = {
       piece: { name: 'Knight' },
@@ -105,7 +104,7 @@ describe('POST /api/match/:id/moves', () => {
     expect(response.body.message).toBe('Movimiento inválido');
   });
 
-  it('should return 500 if there is a server error', async () => {
+  it('debería devolver 500 si hay un error en el servidor', async () => {
     const gameId = 'invalid'; // Un gameId inválido
     const moveData = {
       piece: { name: 'Knight' },

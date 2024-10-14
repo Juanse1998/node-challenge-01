@@ -21,8 +21,6 @@ const updateBoard = async (gameId, from, to, piece) => {
     if (!isValidPosition(from) || !isValidPosition(to)) {
       throw new Error('Posición de ajedrez no válida (debe estar entre a1 y h8)');
     }
-
-    // Actualiza la posición en el tablero
     board[to.y][to.x] = movingPiece; 
     board[from.y][from.x] = " ";
 
