@@ -29,11 +29,22 @@ Los modelos creados en la aplicación son:
 1. **Clonar el repositorio**:
 
    ```bash
-   git clone <URL_DEL_REPOSITORIO>
-   cd <NOMBRE_DEL_REPOSITORIO>
+   git clone git@github.com:Juanse1998/node-challenge-01.git
+   cd node-challenge-01
    ```
 
-2. **Ejecutar el siguiente comando**:
+2. **Ejecutar los siguientes comandos**:
    ```
-     docker-compose up --build
+    docker-compose up postgres
+    docker-compose up backend
+    docker-compose up backend
+   ```
+3. **En el navegador dirigirse a la siguinete url**:
+   ```
+     http://localhost:3001/
+   ```
+4. **inicie sesion con los siguientes datos:**:
+   ```
+     username: player1
+     password: 123456
    ```
