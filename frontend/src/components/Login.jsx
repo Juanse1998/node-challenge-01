@@ -30,9 +30,6 @@ const Login = ({ setToken }) => {
     }
   };
   
-
-
-
   return (
     <div className="login-container">
       <h2 className="text-2xl font-bold mb-4">Iniciar Sesión</h2>

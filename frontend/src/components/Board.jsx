@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 
-const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSelectedGameMoves }) => {
+const Board = ({ board, updateBoard, gameId, setSelectedGameMoves }) => {
+  console.log({ board, updateBoard, gameId });
+
   const [selectedPiece, setSelectedPiece] = useState(null); // Estado para la pieza seleccionada
-  const [fromPosition, setFromPosition] = useState(null); // Estado para la posición de origen
+  const [fromPosition, setFromPosition] = useState(null);
 
   const sendMove = async (moveData) => {
     try {
@@ -26,19 +28,12 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
     }
   };
 
-  const getPieceImage = (piece) => {
-    if (piece === ' ') return null;
-
-    const isWhite = piece === piece.toUpperCase();
-    const pieceType = piece.toLowerCase();
-    const colorPrefix = isWhite ? 'w' : '';
-
-    return `/images/${colorPrefix}${pieceType}.svg`;
+  const addMoveToList = (move) => {
+    setSelectedGameMoves((prevMoves) => [...prevMoves, move]);
   };
 
   const handleCellClick = async (rowIndex, colIndex) => {
     const piece = board[rowIndex][colIndex];
-    console.log('FROMPOSITION', fromPosition);
   
     if (selectedPiece) {
       const to = { x: colIndex, y: rowIndex };
@@ -50,7 +45,7 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
       };
   
       const response = await sendMove(moveData);
-  
+      console.log('aca', updateBoard);
       if (response) {
         const updatedBoard = board.map((row) => [...row]);
         updatedBoard[fromPosition.y][fromPosition.x] = ' ';
@@ -65,7 +60,6 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
           toY: rowIndex,
         };
         setSelectedGameMoves((prevMoves) => [...prevMoves, newMove]);
-  
         addMoveToList(newMove); 
       }
   
@@ -77,6 +71,16 @@ const Board = ({ board, onCellClick, gameId, updateBoard, addMoveToList, setSele
         setFromPosition({ x: colIndex, y: rowIndex });
       }
     }
+  };
+
+  const getPieceImage = (piece) => {
+    if (piece === ' ') return null;
+
+    const isWhite = piece === piece.toUpperCase();
+    const pieceType = piece.toLowerCase();
+    const colorPrefix = isWhite ? 'w' : '';
+
+    return `/images/${colorPrefix}${pieceType}.svg`;
   };
 
   return (

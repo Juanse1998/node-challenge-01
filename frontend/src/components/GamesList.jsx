@@ -8,17 +8,7 @@ const GamesList = ({ games, setGames }) => {
   const [selectedGame, setSelectedGame] = useState(null);
   const [movesGame, setMovesGame] = useState([]);
   const [board, setBoard] = useState([]);
-  const [selectedPiece, setSelectedPiece] = useState(null);
 
-  const handleSelectGame = async (gameId) => {
-    const game = games.find((g) => g.id === gameId);
-    setSelectedGame(game);
-
-    if (game) {
-      await fetchMoves(game.id);
-      setBoard(JSON.parse(game.board));
-    }
-  };
 
   const fetchMoves = async (gameId) => {
     try {
@@ -30,21 +20,20 @@ const GamesList = ({ games, setGames }) => {
     }
   };
 
-  const handleCellClick = (rowIndex, colIndex) => {
-    if (!selectedPiece) {
-      const piece = board[rowIndex][colIndex];
-      if (piece !== ' ') {
-        setSelectedPiece({ piece, rowIndex, colIndex });
-      }
-    } else {
-      // Mueve la pieza seleccionada
-      const newBoard = board.map((row) => row.slice());
-      newBoard[rowIndex][colIndex] = selectedPiece.piece;
-      newBoard[selectedPiece.rowIndex][selectedPiece.colIndex] = ' ';
-      setBoard(newBoard);
-      setSelectedPiece(null);
+  const handleSelectGame = async (gameId) => {
+    const game = games.find((g) => g.id === gameId);
+    setSelectedGame(game);
+
+    if (game) {
+      await fetchMoves(game.id);
+      setBoard(JSON.parse(game.board));
     }
   };
+
+  const updateBoard = (newBoard) => {
+    setBoard(newBoard);
+  };
+
 
   const handleDeleteGame = async (id) => {
     try {
@@ -91,8 +80,9 @@ const GamesList = ({ games, setGames }) => {
           <b>Ganador: {selectedGame.result}</b>
           <Board
             board={board}
+            updateBoard={updateBoard}
             gameId={selectedGame.id}
-            onCellClick={handleCellClick}
+            setSelectedGameMoves={setMovesGame}
             className="mt-4"
           />
           <MovesList moves={movesGame} />
