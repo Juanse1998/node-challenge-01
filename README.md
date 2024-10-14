@@ -37,7 +37,7 @@ Los modelos creados en la aplicación son:
    ```
     docker-compose up postgres
     docker-compose up backend
-    docker-compose up backend
+    docker-compose up frontend
    ```
 3. **En el navegador dirigirse a la siguinete url**:
    ```
